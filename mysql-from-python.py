@@ -8,8 +8,12 @@ connection = pymysql.connect(host="localhost", user=username, password="", db="C
 
 try: #run a query
         with connection.cursor() as cursor:
-            rows = cursor.executemany("delete from Friends where name = %s;", ['Bob', 'Fred'])
+            list_of_Names = ['Fred', 'Bob']
+            # prepare a string with the number of placeholders as in list_of_names  
+            format_strings = ','.join(['%s']*len(list_of_Names))
+            cursor.execute("delete from Friends where name in ({});".format(format_strings), list_of_Names)
             connection.commit()
+                      
 finally: 
     #close the connection, regardless of whether the above was successful
     connection.close()
